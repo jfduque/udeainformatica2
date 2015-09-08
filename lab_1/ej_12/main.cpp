@@ -82,10 +82,14 @@ int main()
     cout << "EJERCICIO 12: Leer un archivo y repartirlo en otros tres" << endl;
     cout << "Ingrese el nombre del archivo: ";
 
+	// Leer el nombre de archivo de CIN y guardarlo en nombre_de_archivo
     getline(cin, nombre_de_archivo);
 
+	// Llamar leer_archivo(), indicando el nombre del archivo a leer
     contenido_de_archivo = leer_archivo(nombre_de_archivo);
 
+	// La funcion leer_archivo() retorna el contenido del mismo en contenido_de_archivo. 
+	// Se envia a escribir_archivos() para que guarde el contenido en los archivos independientes
     escribir_archivos(contenido_de_archivo);
 
     return 0;
