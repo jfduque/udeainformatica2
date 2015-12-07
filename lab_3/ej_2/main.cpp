@@ -5,7 +5,17 @@
 #include <stdlib.h>
 #include <limits.h>
 
+#include <bitset>
+
 using namespace std;
+
+
+char bintochar ( string binario )
+{
+    std::bitset<CHAR_BIT> bs(binario);
+    char c(char(bs.to_ulong()));
+    return c;
+}
 
 string invertir_bits(string cadena)
 {
@@ -61,35 +71,74 @@ int main(int argc, char* argv[])
 
     char *fuente_str = new char[tam];
     bool primer_grupo = true;
+    int ceros_anterior = 0;
+    int unos_anterior = 0;
+    int ceros_actual = 0;
+    int unos_actual = 0;
+    string bits_invertidos;
+    string destino_str;
+
     //string fuente_str;
+
     while(fuente.good())
     {
        fuente.read(fuente_str, tam);
-       // cout << fuente_str << endl;
+//       cout << fuente_str << endl;
+
+       string grupo;
+       for(int i = 0; i < tam; i++)
+       {
+           grupo += fuente_str[i];
+
+           if (fuente_str[i] == '0') {
+               ceros_actual++;
+           }
+
+           if (fuente_str[i] == '1') {
+               unos_actual++;
+           }
+       }
 
        if (primer_grupo) {
            // Invertir los bits
-           destino_str += invertir_bits(fuente_str);
+           bits_invertidos += invertir_bits(fuente_str);
            primer_grupo = false;
        } else {
            if (ceros_anterior == unos_anterior) {
-               destino_str += invertir_bits(fuente_str);
+               bits_invertidos += invertir_bits(fuente_str);
            }
            if (ceros_anterior > unos_anterior) {
-               destino_str += invertir_cada_n_bits(fuente_str, 2);
+               bits_invertidos += invertir_cada_n_bits(fuente_str, 2);
            }
            if (ceros_anterior < unos_anterior) {
-               destino_str += invertir_cada_n_bits(fuente_str, 3);
+               bits_invertidos += invertir_cada_n_bits(fuente_str, 3);
            }
        }
-       //getline(fuente,l);
-       //for(string::size_type i = 0; i < l.size(); ++i) {
-       //    fuente_str += chartobin(l[i]);
-           // cout << l[i] << chartobin(l[i]) << endl;
-       //}
+
+       ceros_anterior = ceros_actual;
+       unos_anterior = unos_actual;
+       ceros_actual = 0;
+       unos_actual = 0;
     }
+
+    for(string::size_type i = 0; i < bits_invertidos.size(); i += CHAR_BIT) {
+        string grupo;
+        for(int j = i; j < i+CHAR_BIT; j++)
+        {
+            grupo += bits_invertidos[j];
+        }
+//        cout << grupo << endl;
+        cout << grupo << bintochar(grupo) << endl;
+
+        destino_str += bintochar(grupo);
+    }
+
+//    destino_str += bintochar(bits_invertidos);
+
+    cout << destino_str << endl;
 
 
     return 0;
 }
+
 
