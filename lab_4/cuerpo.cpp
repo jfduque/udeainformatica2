@@ -29,12 +29,12 @@ int Cuerpo::getMasa()
     return masa;
 }
 
-int Cuerpo::posX()
+double Cuerpo::posX()
 {
     return pos_x;
 }
 
-int Cuerpo::posY()
+double Cuerpo::posY()
 {
     return pos_y;
 }
@@ -48,23 +48,24 @@ void Cuerpo::actualizar()
 {
     double const_g = 6.67384e-11;
 
-    acel_x = 0;
-    acel_y = 0;
     for(std::list<Cuerpo*>::iterator iter = cuerpos_cercanos.begin(); iter != cuerpos_cercanos.end(); iter++){
         Cuerpo *cuerpo = *iter;
 
-        std::cout << "Masa: " << cuerpo->getMasa() << std::endl;
-        std::cout << "Angulo: " << anguloCuerpo(*iter) << std::endl;
-        std::cout << "Distancia: " << distanciaCuerpo(*iter) << std::endl;
-        double num_x = (const_g * cuerpo->getMasa()) * cos(anguloCuerpo(*iter));
-        double num_y = (const_g * cuerpo->getMasa()) * sin(anguloCuerpo(*iter));
+        double angulo = anguloCuerpo(*iter);
+
+        double num_x = (const_g * cuerpo->getMasa()) * cos(angulo);
+        double num_y = (const_g * cuerpo->getMasa()) * sin(angulo);
         double den = pow(distanciaCuerpo(*iter),2);
 
         acel_x = acel_x + num_x/den;
         acel_y = acel_y + num_y/den;
     }
-    std::cout << "ACEL X: " << acel_x << std::endl;
-    std::cout << "ACEL Y: " << acel_y << std::endl;
+
+    vel_x = vel_x + acel_x;
+    vel_y = vel_y + acel_y;
+
+    pos_x = pos_x + vel_x + acel_x/2;
+    pos_y = pos_y + vel_y + acel_y/2;
 }
 
 std::list<Cuerpo *> Cuerpo::listarCuerposCercanos()
@@ -75,7 +76,6 @@ std::list<Cuerpo *> Cuerpo::listarCuerposCercanos()
 double Cuerpo::distanciaCuerpo(Cuerpo *cuerpo)
 {
     double radicando = (pow((cuerpo->posX() - pos_x),2) + pow((cuerpo->posY() - pos_y),2));
-
     return sqrt(radicando);
 }
 
@@ -83,6 +83,6 @@ double Cuerpo::anguloCuerpo(Cuerpo *cuerpo)
 {
     double num = cuerpo->posY() - pos_y;
     double den = cuerpo->posX() - pos_x;
-    return atan(num/den);
-//    return atan(num/den) * 180 / PI;
+
+    return atan2(num,den);
 }

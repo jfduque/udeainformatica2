@@ -8,7 +8,7 @@ class Cuerpo
     private:
         int masa;
 
-        int pos_x_ini, pos_y_ini;
+        double pos_x_ini, pos_y_ini;
         double pos_x, pos_y;
 
         int vel_x_ini, vel_y_ini;
@@ -24,8 +24,8 @@ class Cuerpo
     public:
         Cuerpo(int m, int x, int y);
         int getMasa();
-        int posX();
-        int posY();
+        double posX();
+        double posY();
         std::list<Cuerpo*> listarCuerposCercanos();
         void agregarCuerpo(Cuerpo *cuerpo);
 

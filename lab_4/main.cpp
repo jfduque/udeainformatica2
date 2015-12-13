@@ -1,4 +1,6 @@
 #include <iostream>
+#include <fstream>
+
 #include "cuerpo.h"
 
 using namespace std;
@@ -6,40 +8,47 @@ using namespace std;
 
 int main()
 {
-    cout << "Hello World!" << endl;
-    Cuerpo c1 (1,0,0);
-    Cuerpo c2 (3,10,5);
-    Cuerpo c3 (2,5,10);
+    // cout << "Hello World!" << endl;
+
+    ofstream posiciones_cuerpos;
+
+    Cuerpo c1 (1e10,3,3);
+    Cuerpo c2 (1e3,0,5);
+    Cuerpo c3 (1e3,5,0);
+    Cuerpo c4 (1e3,2,0);
 
     c1.agregarCuerpo(&c2);
     c1.agregarCuerpo(&c3);
+    c1.agregarCuerpo(&c4);
+
     c2.agregarCuerpo(&c1);
     c2.agregarCuerpo(&c3);
+    c2.agregarCuerpo(&c4);
+
     c3.agregarCuerpo(&c1);
     c3.agregarCuerpo(&c2);
-//    std::list<Cuerpo*> lista1 = c1.listarCuerposCercanos();
+    c3.agregarCuerpo(&c4);
 
-//    for(list<Cuerpo*>::iterator iter = lista1.begin(); iter != lista1.end(); iter++){
-//       cout<<*iter<<endl;
-//    }
+    c4.agregarCuerpo(&c1);
+    c4.agregarCuerpo(&c2);
+    c4.agregarCuerpo(&c3);
 
-    cout << "C1 en X: " << c1.posX() << endl;
-    cout << "C1 en Y: " << c1.posY() << endl;
-//    cout << "Angulo de C1 a C2: " << c1.anguloCuerpo(&c2) << endl;
-//    cout << "Angulo de C1 a C3: " << c1.anguloCuerpo(&c3) << endl;
 
-    cout << "C2 en X: " << c2.posX() << endl;
-    cout << "C2 en Y: " << c2.posY() << endl;
-//    cout << "Angulo de C2 a C1: " << c2.anguloCuerpo(&c1) << endl;
-//    cout << "Angulo de C2 a C3: " << c2.anguloCuerpo(&c3) << endl;
+    posiciones_cuerpos.open("posiciones.txt");
+    posiciones_cuerpos << "Tiempo\tC1_X\tC1_Y\tC2_X\tC2_Y\tC3_X\tC3_Y\tC4_X\tC4_Y\t\n";
+    posiciones_cuerpos.close();
 
-    cout << "C3 en X: " << c3.posX() << endl;
-    cout << "C3 en Y: " << c3.posY() << endl;
-//    cout << "Angulo de C3 a C1: " << c3.anguloCuerpo(&c1) << endl;
-//    cout << "Angulo de C3 a C2: " << c3.anguloCuerpo(&c2) << endl;
+    posiciones_cuerpos.open("posiciones.txt",ios::app);
+    for (int x = 0; x <= 500; x++)\
+    {
+        posiciones_cuerpos << x <<'\t'<< c1.posX() <<'\t'<< c1.posY() <<'\t'<< c2.posX() <<'\t'<< c2.posY() <<'\t'<< c3.posX() <<'\t'<< c3.posY() <<'\t'<< c4.posX() <<'\t'<< c4.posY() << endl;
 
-    c1.actualizar();
-//    c2.actualizar();
+        c1.actualizar();
+        c2.actualizar();
+        c3.actualizar();
+        c4.actualizar();
+    }
+    posiciones_cuerpos.close();
 
     return 0;
 }
