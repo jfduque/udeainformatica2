@@ -1,5 +1,6 @@
 #include <list>
 #include <QtGui>
+#include <QString>
 #include <QtDebug>
 
 #include "mainwindow.h"
@@ -70,10 +71,29 @@ void MainWindow::agregarCuerpo(Cuerpo *cuerpo)
 
 void MainWindow::enlazarCuerpos()
 {
-    for(std::list<Cuerpo*>::iterator iter = cuerpos.begin(); iter != cuerpos.end(); iter++){
-        Cuerpo *cuerpo = *iter;
+    if (cuerpos.size() > 1)
+    {
+        std::list<Cuerpo*> cuerpos_copia;
 
-        qDebug() << *iter;
+        for(std::list<Cuerpo*>::iterator iter = cuerpos.begin(); iter != cuerpos.end(); iter++){
+            cuerpos_copia.push_back(*iter);
+        }
+
+        for(std::list<Cuerpo*>::iterator iter = cuerpos.begin(); iter != cuerpos.end(); iter++){
+            Cuerpo *cuerpo = *iter;
+            for(std::list<Cuerpo*>::iterator iter_copia = cuerpos_copia.begin(); iter_copia != cuerpos_copia.end(); iter_copia++){
+                // Cuerpo *cuerpo_copia = *iter_copia;
+
+                // qDebug() << "Iter: " << *iter;
+                // qDebug() << "Iter copia: " << *iter_copia;
+
+                if (*iter != *iter_copia)
+                {
+                    cuerpo->agregarCuerpo(*iter_copia);
+                    qDebug() << "asignado";
+                }
+            }
+        }
     }
 }
 
@@ -95,13 +115,15 @@ void MainWindow::correrSimulacion()
             double pos_x = cuerpo->posX();
             double pos_y = cuerpo->posY();
 
-            qDebug() << cuerpo->getNombre();
+            // qDebug() << "Cuerpo: " << cuerpo->getNombre();
+            qDebug() << "X previa: " << pos_x_prev;
+            qDebug() << "Y previa: " << pos_y_prev;
             qDebug() << "X:" << pos_x;
             qDebug() << "Y:" << pos_y;
 
             this->scene->addLine(pos_x_prev, pos_y_prev, pos_x, pos_y, pen);
 
-            // cuerpo->actualizar();
+            cuerpo->actualizar();
         }
         ui->lcdNumber->display(x);
     }
@@ -120,7 +142,8 @@ void MainWindow::on_pushButtonIniciar_clicked()
     if (numero_cuerpos > 0)
     {
         ui->textBrowser->append( "Iniciando simulacion con " + QString::number(numero_cuerpos) + " cuerpos" );
-        // this->enlazarCuerpos();
+        this->enlazarCuerpos();
+        // ui->textBrowser->append( "Cuerpos enlazados" );
         this->correrSimulacion();
     }
     else

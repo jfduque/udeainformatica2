@@ -2,6 +2,7 @@
 #include <math.h>
 #include <list>
 #include <QString>
+#include <QtDebug>
 
 #include "cuerpo.h"
 
@@ -67,6 +68,8 @@ void Cuerpo::agregarCuerpo(Cuerpo *cuerpo)
 void Cuerpo::actualizar()
 {
     double const_g = 6.67384e-11;
+
+    qDebug() << "Cuerpos cercanos: " << cuerpos_cercanos.size();
 
     for(std::list<Cuerpo*>::iterator iter = cuerpos_cercanos.begin(); iter != cuerpos_cercanos.end(); iter++){
         Cuerpo *cuerpo = *iter;
